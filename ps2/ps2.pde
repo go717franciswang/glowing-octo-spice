@@ -1,21 +1,21 @@
 // The eye is the window to the soul.
 // The computer is emoting (rather fiercely).
 
+color[] eyeColors = {#863D10, #3C5FD6, #77983C, #C4B72A};
+
 void setup() {
-  size(1050, 800);
+  size(1050, 720);
   background(#FFFFFF);
   smooth();
   noLoop();
 }
-
-
 
 void draw() {
   println(mouseX + ", " + mouseY);
   
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 6; j++) {
-      drawRandomEye(100+i*170, 70+j*130);
+      drawRandomEye(100+i*170, 55+j*120);
     }
   }
 }
@@ -35,7 +35,6 @@ void drawRandomEye(float x, float y) {
   float h7 = rand(5, 5);
   float h8 = rand(5, 5);
   float h9 = rand(5, 5);
-  color[] eyeColors = {#863D10, #3C5FD6, #77983C, #C4B72A};
   color pupilColor = eyeColors[int(random(eyeColors.length))];  
   
   Eye e = new Eye(x, y, r1, r2, l1, l2, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, pupilColor);
