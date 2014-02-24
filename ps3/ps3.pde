@@ -1,9 +1,10 @@
 // pew! pew! pew!
 // the wondering eyes are staring at you!
+// Mouse click to begin and blink, H to enter Helix mode
 
 color[] eyeColors = {#863D10, #3C5FD6, #77983C, #C4B72A};
 AnimatedEye[] eyes = new AnimatedEye[6];
-
+boolean begin = false;
 
 void setup() {
   size(1050, 720);
@@ -21,28 +22,35 @@ void draw() {
   //println(mouseX + ", " + mouseY);
   noFill();
   
-  for (AnimatedEye e : eyes) {
-    e.display();
-  }
-  
-  for (AnimatedEye e : eyes) {
-    e.displayHyperBeam();
+  if (begin) {
+    for (AnimatedEye e : eyes) {
+      e.display();
+    }
+    
+    for (AnimatedEye e : eyes) {
+      e.displayHyperBeam();
+    }
   }
 }
 
 void mousePressed() {
+  begin = true;
+  
   for (AnimatedEye e : eyes) {
     e.blink();
   }
 }
 
 void keyTyped() {
-  if (key == 'h') {
-    for (AnimatedEye e : eyes) {
-      e.flipHelix();
-    }
-  } else if (key == 's') {
-    save("eyes.png");
+  switch (key) {
+    case 'h':
+      for (AnimatedEye e : eyes) {
+        e.flipHelix();
+      }
+      break;
+    case 's':
+      save("eyes.png");
+      break;
   }
 }
 
