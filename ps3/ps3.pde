@@ -15,6 +15,10 @@ void draw() {
   e.display();
 }
 
+void mouseClicked() {
+  e.blink();
+}
+
 AnimatedEye getRandomEye(float x, float y) {
   float r1 = rand(15, 3);
   float r2 = rand(35, 5);
@@ -30,9 +34,10 @@ AnimatedEye getRandomEye(float x, float y) {
   float h7 = rand(5, 5);
   float h8 = rand(5, 5);
   float h9 = rand(5, 5);
-  color pupilColor = eyeColors[int(random(eyeColors.length))];  
+  color pupilColor = eyeColors[int(random(eyeColors.length))];
+  float blinkSpeed = rand(0.3, 0.25);
   
-  return new AnimatedEye(x, y, r1, r2, l1, l2, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, pupilColor);
+  return new AnimatedEye(x, y, r1, r2, l1, l2, h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, pupilColor, blinkSpeed);
 }
 
 float rand(float x, float dx) {
@@ -45,11 +50,18 @@ class AnimatedEye {
   private float l0 = 20;
   private color pupilColor;
   private float boundRadius;
-  private int coverEyeBallOverflow = 60;
+  private int coverEyeBallOverflow;
+  private float blinkSpeed;
+  private float blinkProgress = 1;
+  
+  private int eyeState;
+  private final int STARE = 0;
+  private final int OPEN_EYE = 1;
+  private final int SHUT_EYE = 2;
   
   AnimatedEye(float x, float y, float r1, float r2, float l1, float l2,
     float h0, float h1, float h2, float h3, float h4, float h5, float h6, float h7, float h8, float h9,
-    color pupilColor) {
+    color pupilColor, float blinkSpeed) {
     this.x = x;
     this.y = y;
     this.r1 = r1;
@@ -67,20 +79,52 @@ class AnimatedEye {
     this.h8 = h8;
     this.h9 = h9;
     this.pupilColor = pupilColor;
+    this.blinkSpeed = blinkSpeed;
     
-    this.boundRadius = max(new float[]{h2,h3,h4,h5});
-    println(this.boundRadius);
+    eyeState = STARE;
+    boundRadius = max(new float[]{h2,h3,h4,h5});
+    coverEyeBallOverflow = round((3-blinkProgress) * boundRadius);
   }
   
   public void display() {
+    animate();
     strokeWeight(3);
     displayEyeBall();
     displayEyeLids();
   }
   
+  public void blink() {
+    if (eyeState != STARE) {
+      return;
+    }
+    
+    eyeState = SHUT_EYE;
+  }
+  
+  private void animate() {
+    switch (eyeState) {
+      case STARE:
+        return;
+      case SHUT_EYE:
+        blinkProgress -= blinkSpeed;
+        if (blinkProgress <= 0.0) {
+          eyeState = OPEN_EYE;
+        }
+        break;
+      case OPEN_EYE:
+        blinkProgress += blinkSpeed;
+        if (blinkProgress >= 1.0) {
+          eyeState = STARE;
+          blinkProgress = 1.0;
+        }
+        break;
+    } 
+  }
+  
   private void displayEyeBall() {
     fill(pupilColor);
-    float[] xy = bounded(mouseX, mouseY);
+    
+    float[] xy = eyePosition();
     ellipse(xy[0], xy[1], r2*2, r2*2);
     fill(0);
     ellipse(xy[0], xy[1], r1*2, r1*2);
@@ -113,8 +157,8 @@ class AnimatedEye {
     beginShape();
     curveVertex(x-l1-l0, y+h0-h6);
     curveVertex(x-l1, y+h0-h6);
-    curveVertex(x-l1/2, y-h2-h7);
-    curveVertex(x+l2/2, y-h3-h8);
+    curveVertex(x-l1/2, y-h2*blinkProgress-h7);
+    curveVertex(x+l2/2, y-h3*blinkProgress-h8);
     curveVertex(x+l2, y+h1-h9);
     curveVertex(x+l2+l0, y+h1-h9);
     endShape();
@@ -124,8 +168,8 @@ class AnimatedEye {
     beginShape();
     curveVertex(x-l1-l0, y+h0+h);
     curveVertex(x-l1, y+h0+h);
-    curveVertex(x-l1/2, y-h2+h);
-    curveVertex(x+l2/2, y-h3+h);
+    curveVertex(x-l1/2, y-h2*blinkProgress+h);
+    curveVertex(x+l2/2, y-h3*blinkProgress+h);
     curveVertex(x+l2, y+h1+h);
     curveVertex(x+l2+l0, y+h1+h);
     endShape();
@@ -135,21 +179,27 @@ class AnimatedEye {
     beginShape();
     curveVertex(x-l1-l0, y+h0+h);
     curveVertex(x-l1, y+h0+h);
-    curveVertex(x-l1/2, y+h4+h);
-    curveVertex(x+l2/2, y+h5+h);
+    curveVertex(x-l1/2, y+h4*blinkProgress+h);
+    curveVertex(x+l2/2, y+h5*blinkProgress+h);
     curveVertex(x+l2, y+h1+h);
     curveVertex(x+l2+l0, y+h1+h);
     endShape();
   }
   
-  private float[] bounded(float x, float y) {
-    float distanceToCenter = sqrt(sq(x-this.x) + sq(y-this.y));
-    println(distanceToCenter);
-    if (distanceToCenter <= boundRadius) {
+  private float[] eyePosition() {
+    float eX = mouseX;
+    float eY = mouseY;
+    
+    if (eX == 0 && eY == 0) {
       return new float[]{x, y};
     }
     
-    return new float[]{this.x+(x-this.x)/distanceToCenter*boundRadius, 
-                       this.y+(y-this.y)/distanceToCenter*boundRadius};
+    float distanceToCenter = sqrt(sq(eX-x) + sq(eY-y));
+    if (distanceToCenter <= boundRadius) {
+      return new float[]{eX, eY};
+    }
+    
+    return new float[]{x+(eX-x)/distanceToCenter*boundRadius, 
+                       y+(eY-y)/distanceToCenter*boundRadius};
   }
 }
