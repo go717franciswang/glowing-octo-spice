@@ -1,10 +1,19 @@
+// pew! pew! pew!
+// the wondering eyes are staring at you!
+
 color[] eyeColors = {#863D10, #3C5FD6, #77983C, #C4B72A};
-AnimatedEye e = getRandomEye(300, 500);
+AnimatedEye[] eyes = new AnimatedEye[6];
+
 
 void setup() {
   size(1050, 720);
   background(#FFFFFF);
   smooth();
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 3; j++) {
+      eyes[i*3+j] = getRandomEye(300+i*450, 200+j*200);
+    }
+  }
 }
 
 void draw() {
@@ -12,11 +21,27 @@ void draw() {
   //println(mouseX + ", " + mouseY);
   noFill();
   
-  e.display();
+  for (AnimatedEye e : eyes) {
+    e.display();
+  }
+  
+  for (AnimatedEye e : eyes) {
+    e.displayHyperBeam();
+  }
 }
 
-void mouseClicked() {
-  e.blink();
+void mousePressed() {
+  for (AnimatedEye e : eyes) {
+    e.blink();
+  }
+}
+
+void keyTyped() {
+  if (key == 'h') {
+    for (AnimatedEye e : eyes) {
+      e.flipHelix();
+    }
+  }
 }
 
 AnimatedEye getRandomEye(float x, float y) {
@@ -59,6 +84,10 @@ class AnimatedEye {
   private final int OPEN_EYE = 1;
   private final int SHUT_EYE = 2;
   
+  private boolean helixMode = false;
+  private final color HELIX_COLOR = #C9E5DE;
+  private boolean helixHyperMode = false;
+  
   AnimatedEye(float x, float y, float r1, float r2, float l1, float l2,
     float h0, float h1, float h2, float h3, float h4, float h5, float h6, float h7, float h8, float h9,
     color pupilColor, float blinkSpeed) {
@@ -83,7 +112,7 @@ class AnimatedEye {
     
     eyeState = STARE;
     boundRadius = max(new float[]{h2,h3,h4,h5});
-    coverEyeBallOverflow = round((3-blinkProgress) * boundRadius);
+    coverEyeBallOverflow = round((3.5-blinkProgress) * boundRadius);
   }
   
   public void display() {
@@ -94,14 +123,27 @@ class AnimatedEye {
   }
   
   public void blink() {
-    if (eyeState != STARE) {
+    if (eyeState != STARE || helixMode) {
       return;
     }
     
     eyeState = SHUT_EYE;
   }
   
+  public void flipHelix() {
+    if (helixMode) {
+      helixMode = false;
+      helixHyperMode = false;
+    } else {
+      helixMode = true;
+    }
+  }
+  
   private void animate() {
+    if (helixMode && random(1) > 0.99) {
+      helixHyperMode = true;
+    }
+    
     switch (eyeState) {
       case STARE:
         return;
@@ -122,7 +164,11 @@ class AnimatedEye {
   }
   
   private void displayEyeBall() {
-    fill(pupilColor);
+    if (helixMode) {
+      fill(HELIX_COLOR);
+    } else {
+      fill(pupilColor);
+    }
     
     float[] xy = eyePosition();
     ellipse(xy[0], xy[1], r2*2, r2*2);
@@ -184,6 +230,16 @@ class AnimatedEye {
     curveVertex(x+l2, y+h1+h);
     curveVertex(x+l2+l0, y+h1+h);
     endShape();
+  }
+  
+  public void displayHyperBeam() {
+    if (helixHyperMode) {
+      float[] xy = eyePosition();
+      stroke(HELIX_COLOR);
+      strokeWeight(20);
+      line(xy[0], xy[1], mouseX, mouseY);
+      strokeWeight(5);
+    }
   }
   
   private float[] eyePosition() {
