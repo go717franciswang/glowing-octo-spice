@@ -41,6 +41,8 @@ void keyTyped() {
     for (AnimatedEye e : eyes) {
       e.flipHelix();
     }
+  } else if (key == 's') {
+    save("eyes.png");
   }
 }
 
