@@ -11,6 +11,11 @@ class Block {
     this.dz = dz;
   }
   
+  void run() {
+    display();
+    move();
+  }
+  
   void move() {
     z += dz;
   }
