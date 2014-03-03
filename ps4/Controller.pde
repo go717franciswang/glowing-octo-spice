@@ -14,7 +14,9 @@ class Controller {
   private final int GAMEON = 1;
   private final int GAMEOVER = 2;
   
-  Controller() {
+  private AudioSample player;
+  
+  Controller(Minim minim) {
     gameState = GAMEON;
     speed = initialSpeed;
     ball = new Ball(400, 200);
@@ -23,6 +25,8 @@ class Controller {
     Block b = new Block(400, 400, -350, 100, 20, 3000-zstart, 20);
     lastBlock = b;
     blocks.add(b);
+    
+    player = minim.loadSample("flyby-Conor-1500306612.mp3", 512);
   }
   
   public void run() {
@@ -102,6 +106,9 @@ class Controller {
       Block block = (Block) blocks.get(i);
       if (block.outOfRange()) {
         blocks.remove(i);
+        if (gameState == GAMEON) {
+          player.trigger();
+        }
       }
     }
   }
