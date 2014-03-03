@@ -11,23 +11,27 @@ class Block {
     this.dz = dz;
   }
   
-  boolean isContact(Ball ball) {
+  public boolean isContact(Ball ball) {
     if (ball.x()+ball.radius() < x-w/2 || ball.x()-ball.radius() > x+w/2) { return false; }
     if (ball.y()+ball.radius() < y-h/2 || ball.y()+ball.radius() > y+h/2) { return false; }
     if (ball.z() < z-d/2 || ball.z() > z+d/2) { return false; }
     return true;
   }
   
-  void run() {
+  public void run() {
     display();
     move();
   }
   
-  void move() {
+  public boolean outOfRange() {
+    return z-d/2 > 0;
+  }
+  
+  private void move() {
     z += dz;
   }
   
-  void display() {
+  private void display() {
     pushMatrix();
     translate(x, y, z);
     box(w, h, d);

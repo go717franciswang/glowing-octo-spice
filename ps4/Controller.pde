@@ -21,6 +21,17 @@ class Controller {
       Block block = (Block) blocks.get(i); 
       block.run();
     }
+    
+    cleanUp();
+  }
+  
+  private void cleanUp() {
+    for (int i = blocks.size()-1; i >= 0; i--) {
+      Block block = (Block) blocks.get(i);
+      if (block.outOfRange()) {
+        blocks.remove(i);
+      }
+    }
   }
   
   boolean isContact() {
