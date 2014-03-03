@@ -1,9 +1,3 @@
-// single block moving toward you, and disappearing 
-// converting to a block object that can be easily created
-// ball that can go left or right controlled by arrow key
-// ball that can bounce controlled by space
-// bouncing ball that reduce in height and eventually stablizes
-// collision detection of ball and blocks
 // additional properties on a block such that disappearing, speed up, and extra bouncy
 
 Controller controller;

@@ -5,6 +5,10 @@ class Controller {
   private int zstart = -3000;
   private int startTime;
   private int score = 0;
+  private int speed;
+  private int initialSpeed = 15;
+  private int topSpeed = 50;
+  private int iterations = 0;
   
   private int gameState;
   private final int GAMEON = 1;
@@ -12,10 +16,11 @@ class Controller {
   
   Controller() {
     gameState = GAMEON;
-    ball = new Ball(400, 300);
+    speed = initialSpeed;
+    ball = new Ball(400, 200);
     
     blocks = new ArrayList();
-    Block b = new Block(400, 400, -350, 100, 20, 1000-zstart, 20);
+    Block b = new Block(400, 400, -350, 100, 20, 3000-zstart, 20);
     lastBlock = b;
     blocks.add(b);
   }
@@ -24,6 +29,7 @@ class Controller {
     animateObjects();
     incrementScore();
     displayScore();
+    accelerate();
     cleanUp();
     genBlock();
     gameOver();
@@ -31,19 +37,25 @@ class Controller {
   
   private void incrementScore() {
     if (gameState == GAMEON) {
-      score += 1;
+      iterations ++;
+      score += speed;
     }
   }
   
   private void displayScore() {
+    textAlign(CENTER);
     switch (gameState) {
       case GAMEON:
-        text("Score: " + score, 350, 100);
+        text("Score: " + score + ", speed: " + speed, width/2, 100);
         break;
       case GAMEOVER:
-        text("Game Over", 350, 100);
+        text("Score: " + score + ", speed: " + speed + "\nGame Over", width/2, 100);
         break;
     }
+  }
+  
+  private void accelerate() {
+    speed = int(initialSpeed + (topSpeed-initialSpeed)/(1+exp(-(iterations-700)/200)));
   }
   
   private void animateObjects() {
@@ -69,7 +81,7 @@ class Controller {
       while (true) {
         Block b = getRandomBlock();
         blocks.add(b);
-        if (lastBlock.distanceTo(b) < 100 && random(1) < 0.8) {
+        if (lastBlock.distanceTo(b) < speed*5 && random(1) < 0.8) {
           lastBlock = b;
           break;
         }
@@ -82,7 +94,7 @@ class Controller {
     int x = round(random(200, 600));
     int w = round(random(50, 150));
     int h = round(random(20, 100));
-    return new Block(x, 400, zstart, w, h, l, 20);
+    return new Block(x, 400, zstart, w, h, l, speed);
   } 
   
   private void cleanUp() {
