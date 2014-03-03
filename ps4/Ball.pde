@@ -1,12 +1,19 @@
 class Ball {
-  private int x, y;
+  private int x, y, z;
   private int speedX = 0;
   private int speedY = 5;
+  private int radius = 50;
   
   Ball(int x, int y) {
     this.x = x;
     this.y = y;
+    this.z = -100;
   }
+  
+  public int x() { return x; }
+  public int y() { return y; }
+  public int z() { return z; }
+  public int radius() {return radius; }
   
   void run() {
     display();
@@ -17,6 +24,10 @@ class Ball {
   void move() {
     x += speedX;
     y += speedY;
+  }
+  
+  void suspend() {
+    speedY = 0;
   }
   
   void gravity() {
@@ -41,8 +52,8 @@ class Ball {
   
   void display() {
     pushMatrix();
-    translate(x, y, -100);
-    sphere(50);
+    translate(x, y, z);
+    sphere(radius);
     popMatrix();
   }
 } 

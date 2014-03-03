@@ -41,3 +41,7 @@ void keyReleased() {
     case 38: controller.toCenter(); break;
   }
 }
+
+void mouseMoved() {
+  println("x: " + mouseX + ", y: " + mouseY);
+}
