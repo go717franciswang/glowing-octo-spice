@@ -1,5 +1,8 @@
 ### Recreate one of childhood's favorite games
 
+### Note on processing.js
+* do not create class method that has the same name as a class variable because JS throws error
+
 ### Reference
 * using [camera]
 * 3d [transformation]
