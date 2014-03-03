@@ -3,8 +3,15 @@ class Controller {
   private ArrayList blocks;
   private Block lastBlock;
   private int zstart = -3000;
+  private int startTime;
+  private int score = 0;
+  
+  private int gameState;
+  private final int GAMEON = 1;
+  private final int GAMEOVER = 2;
   
   Controller() {
+    gameState = GAMEON;
     ball = new Ball(400, 300);
     
     blocks = new ArrayList();
@@ -14,6 +21,32 @@ class Controller {
   }
   
   public void run() {
+    animateObjects();
+    incrementScore();
+    displayScore();
+    cleanUp();
+    genBlock();
+    gameOver();
+  }
+  
+  private void incrementScore() {
+    if (gameState == GAMEON) {
+      score += 1;
+    }
+  }
+  
+  private void displayScore() {
+    switch (gameState) {
+      case GAMEON:
+        text("Score: " + score, 350, 100);
+        break;
+      case GAMEOVER:
+        text("Game Over", 350, 100);
+        break;
+    }
+  }
+  
+  private void animateObjects() {
     ball.run();
     if (isContact()) {
       ball.suspend();
@@ -23,14 +56,12 @@ class Controller {
       Block block = (Block) blocks.get(i); 
       block.run();
     }
-    
-    cleanUp();
-    genBlock();
-    gameOver();
   }
   
   private void gameOver() {
-    if 
+    if (ball.outOfRange()) {
+      gameState = GAMEOVER;
+    }
   }
   
   private void genBlock() {
@@ -38,7 +69,7 @@ class Controller {
       while (true) {
         Block b = getRandomBlock();
         blocks.add(b);
-        if (lastBlock.distanceTo(b) < 100 && random(1) < 0.66) {
+        if (lastBlock.distanceTo(b) < 100 && random(1) < 0.8) {
           lastBlock = b;
           break;
         }

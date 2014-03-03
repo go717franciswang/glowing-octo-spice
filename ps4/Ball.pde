@@ -22,7 +22,7 @@ class Ball {
   }
   
   public boolean outOfRange() {
-    
+    return y > height;
   }
   
   private void move() {
