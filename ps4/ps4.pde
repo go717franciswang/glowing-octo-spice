@@ -43,5 +43,5 @@ void keyReleased() {
 }
 
 void mouseMoved() {
-  println("x: " + mouseX + ", y: " + mouseY);
+  //println("x: " + mouseX + ", y: " + mouseY);
 }

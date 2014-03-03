@@ -15,42 +15,46 @@ class Ball {
   public int z() { return z; }
   public int radius() {return radius; }
   
-  void run() {
+  public void run() {
     display();
     move();
     gravity();
   }
   
-  void move() {
+  public boolean outOfRange() {
+    
+  }
+  
+  private void move() {
     x += speedX;
     y += speedY;
   }
   
-  void suspend() {
+  public void suspend() {
     speedY = 0;
   }
   
-  void gravity() {
+  private void gravity() {
     speedY += 1;
   }
   
-  void hop() {
+  public void hop() {
     speedY = -20;
   }
   
-  void toLeft() {
+  public void toLeft() {
     speedX = -10;
   }
   
-  void toRight() {
+  public void toRight() {
     speedX = 10;
   }
   
-  void toCenter() {
+  public void toCenter() {
     speedX = 0;
   }
   
-  void display() {
+  private void display() {
     pushMatrix();
     translate(x, y, z);
     sphere(radius);
