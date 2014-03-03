@@ -5,17 +5,16 @@ import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
-// additional properties on a block such that disappearing, speed up, and extra bouncy
+// TODO: additional properties on a block such that disappearing, speed up, and extra bouncy
 
 Controller controller;
-Minim minim;
 
 void setup() {
   size(800, 800, OPENGL);
   frameRate(50);
   noStroke();
   
-  minim = new Minim(this);
+  Minim minim = new Minim(this);
   controller = new Controller(minim);
 }
 
