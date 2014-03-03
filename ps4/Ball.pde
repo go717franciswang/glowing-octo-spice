@@ -10,10 +10,10 @@ class Ball {
     this.z = -100;
   }
   
-  public int x() { return x; }
-  public int y() { return y; }
-  public int z() { return z; }
-  public int radius() {return radius; }
+  public int getx() { return x; }
+  public int gety() { return y; }
+  public int getz() { return z; }
+  public int getRadius() {return radius; }
   
   public void run() {
     display();

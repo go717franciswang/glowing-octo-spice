@@ -35,6 +35,18 @@ class Controller {
     gameOver();
   }
   
+  private void animateObjects() {
+    ball.run();
+    if (isContact()) {
+      ball.suspend();
+    }
+    
+    for (int i = 0; i < blocks.size(); i++) {
+      Block block = (Block) blocks.get(i); 
+      block.run();
+    }
+  }
+  
   private void incrementScore() {
     if (gameState == GAMEON) {
       iterations ++;
@@ -55,19 +67,7 @@ class Controller {
   }
   
   private void accelerate() {
-    speed = int(initialSpeed + (topSpeed-initialSpeed)/(1+exp(-(iterations-700)/200)));
-  }
-  
-  private void animateObjects() {
-    ball.run();
-    if (isContact()) {
-      ball.suspend();
-    }
-    
-    for (int i = 0; i < blocks.size(); i++) {
-      Block block = (Block) blocks.get(i); 
-      block.run();
-    }
+    speed = round(initialSpeed + (topSpeed-initialSpeed)/(1+exp(-(iterations-700)/200)));
   }
   
   private void gameOver() {
@@ -77,7 +77,7 @@ class Controller {
   }
   
   private void genBlock() {
-    if (lastBlock.z() - zstart > 1000) {
+    if (lastBlock.getz() - zstart > 1000) {
       while (true) {
         Block b = getRandomBlock();
         blocks.add(b);

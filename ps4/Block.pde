@@ -12,14 +12,14 @@ class Block {
     this.dz = dz;
   }
   
-  public int x() { return x; }
-  public int y() { return y; }
-  public int z() { return z; }
+  public int getx() { return x; }
+  public int gety() { return y; }
+  public int getz() { return z; }
   
   public boolean isContact(Ball ball) {
-    if (ball.x()+ball.radius() < x-w/2 || ball.x()-ball.radius() > x+w/2) { return false; }
-    if (ball.y()+ball.radius() < y-h/2 || ball.y()+ball.radius() > y+h/2) { return false; }
-    if (ball.z() < z-d/2 || ball.z() > z+d/2) { return false; }
+    if (ball.getx()+ball.getRadius() < x-w/2 || ball.getx()-ball.getRadius() > x+w/2) { return false; }
+    if (ball.gety()+ball.getRadius() < y-h/2 || ball.gety()+ball.getRadius() > y+h/2) { return false; }
+    if (ball.getz() < z-d/2 || ball.getz() > z+d/2) { return false; }
     return true;
   }
   

@@ -51,10 +51,10 @@ class Ball {
     this.z = -100;
   }
   
-  public int x() { return x; }
-  public int y() { return y; }
-  public int z() { return z; }
-  public int radius() {return radius; }
+  public int getx() { return x; }
+  public int gety() { return y; }
+  public int getz() { return z; }
+  public int getRadius() {return radius; }
   
   public void run() {
     display();
@@ -116,14 +116,14 @@ class Block {
     this.dz = dz;
   }
   
-  public int x() { return x; }
-  public int y() { return y; }
-  public int z() { return z; }
+  public int getx() { return x; }
+  public int gety() { return y; }
+  public int getz() { return z; }
   
   public boolean isContact(Ball ball) {
-    if (ball.x()+ball.radius() < x-w/2 || ball.x()-ball.radius() > x+w/2) { return false; }
-    if (ball.y()+ball.radius() < y-h/2 || ball.y()+ball.radius() > y+h/2) { return false; }
-    if (ball.z() < z-d/2 || ball.z() > z+d/2) { return false; }
+    if (ball.getx()+ball.getRadius() < x-w/2 || ball.getx()-ball.getRadius() > x+w/2) { return false; }
+    if (ball.gety()+ball.getRadius() < y-h/2 || ball.gety()+ball.getRadius() > y+h/2) { return false; }
+    if (ball.getz() < z-d/2 || ball.getz() > z+d/2) { return false; }
     return true;
   }
   
@@ -158,7 +158,10 @@ class Controller {
   private int zstart = -3000;
   private int startTime;
   private int score = 0;
-  private int speed = 20;
+  private int speed;
+  private int initialSpeed = 15;
+  private int topSpeed = 50;
+  private int iterations = 0;
   
   private int gameState;
   private final int GAMEON = 1;
@@ -166,10 +169,11 @@ class Controller {
   
   Controller() {
     gameState = GAMEON;
+    speed = initialSpeed;
     ball = new Ball(400, 200);
     
     blocks = new ArrayList();
-    Block b = new Block(400, 400, -350, 100, 20, 1000-zstart, 20);
+    Block b = new Block(400, 400, -350, 100, 20, 3000-zstart, 20);
     lastBlock = b;
     blocks.add(b);
   }
@@ -184,28 +188,6 @@ class Controller {
     gameOver();
   }
   
-  private void incrementScore() {
-    if (gameState == GAMEON) {
-      score += speed;
-    }
-  }
-  
-  private void displayScore() {
-    textAlign(CENTER);
-    switch (gameState) {
-      case GAMEON:
-        text("Score: " + score, width/2, 100);
-        break;
-      case GAMEOVER:
-        text("Score: " + score + "\nGame Over", width/2, 100);
-        break;
-    }
-  }
-  
-  private void accelerate() {
-    speed++;
-  }
-  
   private void animateObjects() {
     ball.run();
     if (isContact()) {
@@ -218,6 +200,29 @@ class Controller {
     }
   }
   
+  private void incrementScore() {
+    if (gameState == GAMEON) {
+      iterations ++;
+      score += speed;
+    }
+  }
+  
+  private void displayScore() {
+    textAlign(CENTER);
+    switch (gameState) {
+      case GAMEON:
+        text("Score: " + score + ", speed: " + speed, width/2, 100);
+        break;
+      case GAMEOVER:
+        text("Score: " + score + ", speed: " + speed + "\nGame Over", width/2, 100);
+        break;
+    }
+  }
+  
+  private void accelerate() {
+    speed = round(initialSpeed + (topSpeed-initialSpeed)/(1+exp(-(iterations-700)/200)));
+  }
+  
   private void gameOver() {
     if (ball.outOfRange()) {
       gameState = GAMEOVER;
@@ -225,11 +230,11 @@ class Controller {
   }
   
   private void genBlock() {
-    if (lastBlock.z() - zstart > 1000) {
+    if (lastBlock.getz() - zstart > 1000) {
       while (true) {
         Block b = getRandomBlock();
         blocks.add(b);
-        if (lastBlock.distanceTo(b) < 100 && random(1) < 0.8) {
+        if (lastBlock.distanceTo(b) < speed*5 && random(1) < 0.8) {
           lastBlock = b;
           break;
         }
