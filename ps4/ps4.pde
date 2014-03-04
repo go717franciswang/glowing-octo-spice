@@ -3,7 +3,7 @@
 Controller controller;
 
 void setup() {
-  size(800, 800, OPENGL);
+  size(800, 720, OPENGL);
   frameRate(50);
   noStroke();
   
@@ -27,6 +27,7 @@ void keyPressed() {
     case 39: controller.toRight(); break;
     case 32: controller.hop(); break; 
   }
+  //saveFrame("game-######.png");
 }
 
 void keyReleased() {
