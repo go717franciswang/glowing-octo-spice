@@ -35,6 +35,7 @@ void keyPressed() {
     case 39: controller.toRight(); break;
     case 32: controller.hop(); break; 
   }
+  save("ss.png");
 }
 
 void keyReleased() {

@@ -1,3 +1,6 @@
+### Demo
+http://go717franciswang.github.io/processing/2014/03/03/childhood-game.html#title
+
 ### Recreate one of childhood's favorite games
 
 ### Note on processing.js
