@@ -33,7 +33,7 @@ class Block {
   }
   
   public boolean outOfRange() {
-    return z-1.5*d > 0;
+    return z-d/2 > 400;
   }
   
   private void move() {

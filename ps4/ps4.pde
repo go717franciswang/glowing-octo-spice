@@ -1,4 +1,11 @@
-// additional properties on a block such that disappearing, speed up, and extra bouncy
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+
+// TODO: additional properties on a block such that disappearing, speed up, and extra bouncy
 
 Controller controller;
 
@@ -7,7 +14,8 @@ void setup() {
   frameRate(50);
   noStroke();
   
-  controller = new Controller();
+  Minim minim = new Minim(this);
+  controller = new Controller(minim);
 }
 
 void draw() {
